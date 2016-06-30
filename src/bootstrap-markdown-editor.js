@@ -145,6 +145,12 @@
                     } else {
                         snippetManager.insertSnippet(editor, '![' + selectedText + '](http://$1)');
                     }
+                } else if (btnType === 'custom1') {
+                    if (selectedText === '') {
+                        snippetManager.insertSnippet(editor, '(Custom){$1}');
+                    } else {
+                        snippetManager.insertSnippet(editor, '(Custom){' + selectedText + '}');
+                    }
 
                 } else if (btnType === 'edit') {
                     preview = false;
@@ -370,6 +376,13 @@
                     }
                 html += '</div>'; // .btn-group
 
+                // custom btn-group
+                html += '<div class="btn-group">';
+                    if (options.custom1 === true) {
+                        html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnCustom1 + '" class="md-btn btn btn-sm btn-default" data-btn="custom1"><span class="glyphicon glyphicon-send"></span></button>';
+                    }
+                html += '</div>'; // .btn-group
+
                 if (options.fullscreen === true) {
                     html += '<div class="btn-group pull-right">';
                         html += '<button type="button" class="md-btn btn btn-sm btn-default" data-btn="fullscreen"><span class="glyphicon glyphicon-fullscreen"></span> ' + options.label.btnFullscreen + '</button>';
@@ -419,7 +432,8 @@
             btnEdit: 'Edit',
             btnPreview: 'Preview',
             btnFullscreen: 'Fullscreen',
-            loading: 'Loading'
+            loading: 'Loading',
+            btnCustom1: 'Custom1'
         }
     };
 
