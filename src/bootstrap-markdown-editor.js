@@ -145,13 +145,13 @@
                     } else {
                         snippetManager.insertSnippet(editor, '![' + selectedText + '](http://$1)');
                     }
-                } else if (btnType === 'custom1') {
-                    if (selectedText === '') {
-                        snippetManager.insertSnippet(editor, '(Custom){$1}');
-                    } else {
-                        snippetManager.insertSnippet(editor, '(Custom){' + selectedText + '}');
-                    }
-
+                } else if (btnType === 'recipe') {
+                    options.recipeOnClick(editor);
+                } else if (btnType === 'foodstuff') {
+                    options.foodstuffOnClick(editor);
+                } else if (btnType === 'hr') {
+                    editor.navigateLineEnd();
+                    editor.insert("\n---");
                 } else if (btnType === 'edit') {
                     preview = false;
 
@@ -351,51 +351,60 @@
         html += '<div class="md-loading"><span class="md-icon-container"><span class="md-icon"></span></span></div>';
         html += '<div class="md-toolbar">';
             html += '<div class="btn-toolbar">';
+                if (options.customHeader != true) {
+                    html += '<div class="btn-group">';
+                        html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnHeader1 + '" class="md-btn btn btn-sm btn-default" data-btn="h1">H1</button>';
+                        html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnHeader2 + '" class="md-btn btn btn-sm btn-default" data-btn="h2">H2</button>';
+                        html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnHeader3 + '" class="md-btn btn btn-sm btn-default" data-btn="h3">H3</button>';
+                    html += '</div>'; // .btn-group
 
-                html += '<div class="btn-group">';
-                    html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnHeader1 + '" class="md-btn btn btn-sm btn-default" data-btn="h1">H1</button>';
-                    html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnHeader2 + '" class="md-btn btn btn-sm btn-default" data-btn="h2">H2</button>';
-                    html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnHeader3 + '" class="md-btn btn btn-sm btn-default" data-btn="h3">H3</button>';
-                html += '</div>'; // .btn-group
+                    html += '<div class="btn-group">';
+                        html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnBold + '" class="md-btn btn btn-sm btn-default" data-btn="bold"><span class="glyphicon glyphicon-bold"></span></button>';
+                        html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnItalic + '" class="md-btn btn btn-sm btn-default" data-btn="italic"><span class="glyphicon glyphicon-italic"></span></button>';
+                    html += '</div>'; // .btn-group
 
-                html += '<div class="btn-group">';
-                    html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnBold + '" class="md-btn btn btn-sm btn-default" data-btn="bold"><span class="glyphicon glyphicon-bold"></span></button>';
-                    html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnItalic + '" class="md-btn btn btn-sm btn-default" data-btn="italic"><span class="glyphicon glyphicon-italic"></span></button>';
-                html += '</div>'; // .btn-group
+                    html += '<div class="btn-group">';
+                        html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnList + '" class="md-btn btn btn-sm btn-default" data-btn="ul"><span class="glyphicon glyphicon glyphicon-list"></span></button>';
+                        html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnOrderedList + '" class="md-btn btn btn-sm btn-default" data-btn="ol"><span class="glyphicon glyphicon-th-list"></span></button>';
+                    html += '</div>'; // .btn-group
 
-                html += '<div class="btn-group">';
-                    html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnList + '" class="md-btn btn btn-sm btn-default" data-btn="ul"><span class="glyphicon glyphicon glyphicon-list"></span></button>';
-                    html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnOrderedList + '" class="md-btn btn btn-sm btn-default" data-btn="ol"><span class="glyphicon glyphicon-th-list"></span></button>';
-                html += '</div>'; // .btn-group
+                    html += '<div class="btn-group">';
+                        html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnLink + '" class="md-btn btn btn-sm btn-default" data-btn="link"><span class="glyphicon glyphicon-link"></span></button>';
+                        html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnImage + '" class="md-btn btn btn-sm btn-default" data-btn="image"><span class="glyphicon glyphicon-picture"></span></button>';
+                        if (options.imageUpload === true) {
+                            html += '<div data-mdtooltip="tooltip" title="' + options.label.btnUpload + '" class="btn btn-sm btn-default md-btn-file"><span class="glyphicon glyphicon-upload"></span><input class="md-input-upload" type="file" multiple accept=".jpg,.jpeg,.png,.gif"></div>';
+                        }
+                    html += '</div>'; // .btn-group
 
-                html += '<div class="btn-group">';
-                    html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnLink + '" class="md-btn btn btn-sm btn-default" data-btn="link"><span class="glyphicon glyphicon-link"></span></button>';
-                    html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnImage + '" class="md-btn btn btn-sm btn-default" data-btn="image"><span class="glyphicon glyphicon-picture"></span></button>';
-                    if (options.imageUpload === true) {
-                        html += '<div data-mdtooltip="tooltip" title="' + options.label.btnUpload + '" class="btn btn-sm btn-default md-btn-file"><span class="glyphicon glyphicon-upload"></span><input class="md-input-upload" type="file" multiple accept=".jpg,.jpeg,.png,.gif"></div>';
+                    if (options.fullscreen === true) {
+                        html += '<div class="btn-group pull-right">';
+                            html += '<button type="button" class="md-btn btn btn-sm btn-default" data-btn="fullscreen"><span class="glyphicon glyphicon-fullscreen"></span> ' + options.label.btnFullscreen + '</button>';
+                        html += '</div>'; // .btn-group
                     }
-                html += '</div>'; // .btn-group
 
-                // custom btn-group
-                html += '<div class="btn-group">';
-                    if (options.custom1 === true) {
-                        html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnCustom1 + '" class="md-btn btn btn-sm btn-default" data-btn="custom1"><span class="glyphicon glyphicon-send"></span></button>';
+                    if (options.preview === true) {
+                        html += '<div class="btn-group pull-right">';
+                            html += '<button type="button" class="md-btn btn btn-sm btn-default btn-edit active" data-btn="edit"><span class="glyphicon glyphicon-pencil"></span> ' + options.label.btnEdit + '</button>';
+                            html += '<button type="button" class="md-btn btn btn-sm btn-default btn-preview" data-btn="preview"><span class="glyphicon glyphicon-eye-open"></span> ' + options.label.btnPreview + '</button>';
+                        html += '</div>'; // .btn-group
                     }
-                html += '</div>'; // .btn-group
+                } else {
+                    // custom btn-group
+                    html += '<div class="btn-group">';
+                        html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnHeader1 + '" class="md-btn btn btn-sm btn-default" data-btn="h1">标题</button>';
+                        html += '<div data-mdtooltip="tooltip" title="' + options.label.btnUpload + '" class="btn btn-sm btn-default md-btn-file"><input class="md-input-upload" type="file" multiple accept=".jpg,.jpeg,.png,.gif">图片</div>';
+                    html += '</div>'; // .btn-group
 
-                if (options.fullscreen === true) {
-                    html += '<div class="btn-group pull-right">';
-                        html += '<button type="button" class="md-btn btn btn-sm btn-default" data-btn="fullscreen"><span class="glyphicon glyphicon-fullscreen"></span> ' + options.label.btnFullscreen + '</button>';
+                    // custom btn-group
+                    html += '<div class="btn-group">';
+                        html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnRecipe + '" class="md-btn btn btn-sm btn-default" data-btn="recipe">食谱</button>';
+                        html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnFoodstuff + '" class="md-btn btn btn-sm btn-default" data-btn="foodstuff">商品</button>';
+                    html += '</div>'; // .btn-group
+
+                    html += '<div class="btn-group">';
+                        html += '<button type="button" data-mdtooltip="tooltip" title="' + options.label.btnHr + '" class="md-btn btn btn-sm btn-default" data-btn="hr">分割线</button>';
                     html += '</div>'; // .btn-group
                 }
-
-                if (options.preview === true) {
-                    html += '<div class="btn-group pull-right">';
-                        html += '<button type="button" class="md-btn btn btn-sm btn-default btn-edit active" data-btn="edit"><span class="glyphicon glyphicon-pencil"></span> ' + options.label.btnEdit + '</button>';
-                        html += '<button type="button" class="md-btn btn btn-sm btn-default btn-preview" data-btn="preview"><span class="glyphicon glyphicon-eye-open"></span> ' + options.label.btnPreview + '</button>';
-                    html += '</div>'; // .btn-group
-                }
-
             html += '</div>'; // .btn-toolbar
         html += '</div>'; // .md-toolbar
 
@@ -433,7 +442,9 @@
             btnPreview: 'Preview',
             btnFullscreen: 'Fullscreen',
             loading: 'Loading',
-            btnCustom1: 'Custom1'
+            btnRecipe: '食谱',
+            btnFoodstuff: '商品',
+            btnHr: '分割线'
         }
     };
 

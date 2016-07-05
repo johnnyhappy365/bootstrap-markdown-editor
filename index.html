@@ -56,11 +56,16 @@
             jQuery(document).ready(function($) {
 
                 $('#editor').markdownEditor({
-                    preview: true,
-                    onPreview: function (content, callback) {
-                        callback( marked(content) );
+                    preview: false,
+                    fullscreen: false,
+                    imageUpload: true,
+                    customHeader: true,
+                    recipeOnClick: function(editor) {
+                        console.log('recipe click');
                     },
-                    custom1: true
+                    foodstuffOnClick: function(editor) {
+                        console.log('foodstuff click');
+                    }
                 });
 
             });
